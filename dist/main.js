@@ -9,13 +9,46 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js ***!
+  \*******************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+eval("\n\n/* eslint-env browser */\n\n/*\n  eslint-disable\n  no-console,\n  func-names\n*/\n\n/** @typedef {any} TODO */\nvar normalizeUrl = __webpack_require__(/*! ./normalize-url */ \"./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js\");\n\nvar srcByModuleId = Object.create(null);\nvar noDocument = typeof document === \"undefined\";\nvar forEach = Array.prototype.forEach;\n/**\n * @param {function} fn\n * @param {number} time\n * @returns {(function(): void)|*}\n */\n\nfunction debounce(fn, time) {\n  var timeout = 0;\n  return function () {\n    // @ts-ignore\n    var self = this; // eslint-disable-next-line prefer-rest-params\n\n    var args = arguments;\n\n    var functionCall = function functionCall() {\n      return fn.apply(self, args);\n    };\n\n    clearTimeout(timeout); // @ts-ignore\n\n    timeout = setTimeout(functionCall, time);\n  };\n}\n\nfunction noop() {}\n/**\n * @param {TODO} moduleId\n * @returns {TODO}\n */\n\n\nfunction getCurrentScriptUrl(moduleId) {\n  var src = srcByModuleId[moduleId];\n\n  if (!src) {\n    if (document.currentScript) {\n      src =\n      /** @type {HTMLScriptElement} */\n      document.currentScript.src;\n    } else {\n      var scripts = document.getElementsByTagName(\"script\");\n      var lastScriptTag = scripts[scripts.length - 1];\n\n      if (lastScriptTag) {\n        src = lastScriptTag.src;\n      }\n    }\n\n    srcByModuleId[moduleId] = src;\n  }\n  /**\n   * @param {string} fileMap\n   * @returns {null | string[]}\n   */\n\n\n  return function (fileMap) {\n    if (!src) {\n      return null;\n    }\n\n    var splitResult = src.split(/([^\\\\/]+)\\.js$/);\n    var filename = splitResult && splitResult[1];\n\n    if (!filename) {\n      return [src.replace(\".js\", \".css\")];\n    }\n\n    if (!fileMap) {\n      return [src.replace(\".js\", \".css\")];\n    }\n\n    return fileMap.split(\",\").map(function (mapRule) {\n      var reg = new RegExp(\"\".concat(filename, \"\\\\.js$\"), \"g\");\n      return normalizeUrl(src.replace(reg, \"\".concat(mapRule.replace(/{fileName}/g, filename), \".css\")));\n    });\n  };\n}\n/**\n * @param {TODO} el\n * @param {string} [url]\n */\n\n\nfunction updateCss(el, url) {\n  if (!url) {\n    if (!el.href) {\n      return;\n    } // eslint-disable-next-line\n\n\n    url = el.href.split(\"?\")[0];\n  }\n\n  if (!isUrlRequest(\n  /** @type {string} */\n  url)) {\n    return;\n  }\n\n  if (el.isLoaded === false) {\n    // We seem to be about to replace a css link that hasn't loaded yet.\n    // We're probably changing the same file more than once.\n    return;\n  }\n\n  if (!url || !(url.indexOf(\".css\") > -1)) {\n    return;\n  } // eslint-disable-next-line no-param-reassign\n\n\n  el.visited = true;\n  var newEl = el.cloneNode();\n  newEl.isLoaded = false;\n  newEl.addEventListener(\"load\", function () {\n    if (newEl.isLoaded) {\n      return;\n    }\n\n    newEl.isLoaded = true;\n    el.parentNode.removeChild(el);\n  });\n  newEl.addEventListener(\"error\", function () {\n    if (newEl.isLoaded) {\n      return;\n    }\n\n    newEl.isLoaded = true;\n    el.parentNode.removeChild(el);\n  });\n  newEl.href = \"\".concat(url, \"?\").concat(Date.now());\n\n  if (el.nextSibling) {\n    el.parentNode.insertBefore(newEl, el.nextSibling);\n  } else {\n    el.parentNode.appendChild(newEl);\n  }\n}\n/**\n * @param {string} href\n * @param {TODO} src\n * @returns {TODO}\n */\n\n\nfunction getReloadUrl(href, src) {\n  var ret; // eslint-disable-next-line no-param-reassign\n\n  href = normalizeUrl(href);\n  src.some(\n  /**\n   * @param {string} url\n   */\n  // eslint-disable-next-line array-callback-return\n  function (url) {\n    if (href.indexOf(src) > -1) {\n      ret = url;\n    }\n  });\n  return ret;\n}\n/**\n * @param {string} [src]\n * @returns {boolean}\n */\n\n\nfunction reloadStyle(src) {\n  if (!src) {\n    return false;\n  }\n\n  var elements = document.querySelectorAll(\"link\");\n  var loaded = false;\n  forEach.call(elements, function (el) {\n    if (!el.href) {\n      return;\n    }\n\n    var url = getReloadUrl(el.href, src);\n\n    if (!isUrlRequest(url)) {\n      return;\n    }\n\n    if (el.visited === true) {\n      return;\n    }\n\n    if (url) {\n      updateCss(el, url);\n      loaded = true;\n    }\n  });\n  return loaded;\n}\n\nfunction reloadAll() {\n  var elements = document.querySelectorAll(\"link\");\n  forEach.call(elements, function (el) {\n    if (el.visited === true) {\n      return;\n    }\n\n    updateCss(el);\n  });\n}\n/**\n * @param {string} url\n * @returns {boolean}\n */\n\n\nfunction isUrlRequest(url) {\n  // An URL is not an request if\n  // It is not http or https\n  if (!/^[a-zA-Z][a-zA-Z\\d+\\-.]*:/.test(url)) {\n    return false;\n  }\n\n  return true;\n}\n/**\n * @param {TODO} moduleId\n * @param {TODO} options\n * @returns {TODO}\n */\n\n\nmodule.exports = function (moduleId, options) {\n  if (noDocument) {\n    console.log(\"no window.document found, will not HMR CSS\");\n    return noop;\n  }\n\n  var getScriptSrc = getCurrentScriptUrl(moduleId);\n\n  function update() {\n    var src = getScriptSrc(options.filename);\n    var reloaded = reloadStyle(src);\n\n    if (options.locals) {\n      console.log(\"[HMR] Detected local css modules. Reload all css\");\n      reloadAll();\n      return;\n    }\n\n    if (reloaded) {\n      console.log(\"[HMR] css reload %s\", src.join(\" \"));\n    } else {\n      console.log(\"[HMR] Reload all css\");\n      reloadAll();\n    }\n  }\n\n  return debounce(update, 50);\n};\n\n//# sourceURL=webpack://survive-wepback/./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js?");
+
+/***/ }),
+
+/***/ "./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js ***!
+  \************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+eval("\n\n/* eslint-disable */\n\n/**\n * @param {string[]} pathComponents\n * @returns {string}\n */\nfunction normalizeUrl(pathComponents) {\n  return pathComponents.reduce(function (accumulator, item) {\n    switch (item) {\n      case \"..\":\n        accumulator.pop();\n        break;\n\n      case \".\":\n        break;\n\n      default:\n        accumulator.push(item);\n    }\n\n    return accumulator;\n  },\n  /** @type {string[]} */\n  []).join(\"/\");\n}\n/**\n * @param {string} urlString\n * @returns {string}\n */\n\n\nmodule.exports = function (urlString) {\n  urlString = urlString.trim();\n\n  if (/^data:/i.test(urlString)) {\n    return urlString;\n  }\n\n  var protocol = urlString.indexOf(\"//\") !== -1 ? urlString.split(\"//\")[0] + \"//\" : \"\";\n  var components = urlString.replace(new RegExp(protocol, \"i\"), \"\").split(\"/\");\n  var host = components[0].toLowerCase().replace(/\\.$/, \"\");\n  components[0] = \"\";\n  var path = normalizeUrl(components);\n  return protocol + host + path;\n};\n\n//# sourceURL=webpack://survive-wepback/./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js?");
+
+/***/ }),
+
+/***/ "./src/main.css":
+/*!**********************!*\
+  !*** ./src/main.css ***!
+  \**********************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n    if(true) {\n      // 1645957620863\n      var cssReload = __webpack_require__(/*! ../node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ \"./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js\")(module.id, {\"locals\":false});\n      module.hot.dispose(cssReload);\n      module.hot.accept(undefined, cssReload);\n    }\n  \n\n//# sourceURL=webpack://survive-wepback/./src/main.css?");
+
+/***/ }),
+
 /***/ "./node_modules/webpack-plugin-serve/client.js":
 /*!*****************************************************!*\
   !*** ./node_modules/webpack-plugin-serve/client.js ***!
   \*****************************************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("/*\n  Copyright © 2018 Andrew Powell\n\n  This Source Code Form is subject to the terms of the Mozilla Public\n  License, v. 2.0. If a copy of the MPL was not distributed with this\n  file, You can obtain one at http://mozilla.org/MPL/2.0/.\n\n  The above copyright notice and this permission notice shall be\n  included in all copies or substantial portions of this Source Code Form.\n*/\n\n/**\n * @note This file exists merely as an easy reference for folks adding it to their configuration entries\n */\n\n(() => {\n  /* eslint-disable global-require */\n  const { run } = __webpack_require__(/*! ./lib/client/client */ \"./node_modules/webpack-plugin-serve/lib/client/client.js\");\n  let hash = '<unknown>';\n  let options;\n  try {\n    options = {\"compress\":null,\"headers\":null,\"historyFallback\":false,\"hmr\":true,\"host\":null,\"liveReload\":true,\"log\":{\"level\":\"info\",\"prefix\":{\"template\":\"{{level}}\"},\"name\":\"webpack-plugin-serve\"},\"open\":false,\"port\":8080,\"progress\":true,\"publicPath\":null,\"ramdisk\":false,\"secure\":false,\"static\":\"./dist\",\"status\":true,\"waitForBuild\":true,\"address\":\"[::]:8080\",\"compilerName\":null,\"wpsId\":\"6525fa1\"};\n  } catch (e) {\n    const { log } = __webpack_require__(/*! ./lib/client/log */ \"./node_modules/webpack-plugin-serve/lib/client/log.js\");\n    log.error(\n      'The entry for webpack-plugin-serve was included in your build, but it does not appear that the plugin was. Please check your configuration.'\n    );\n  }\n\n  try {\n    // eslint-disable-next-line camelcase\n    hash = __webpack_require__.h();\n  } catch (e) {} // eslint-disable-line no-empty\n\n  run(hash, options);\n})();\n\n\n//# sourceURL=webpack://survive-wepback/./node_modules/webpack-plugin-serve/client.js?");
+eval("/*\n  Copyright © 2018 Andrew Powell\n\n  This Source Code Form is subject to the terms of the Mozilla Public\n  License, v. 2.0. If a copy of the MPL was not distributed with this\n  file, You can obtain one at http://mozilla.org/MPL/2.0/.\n\n  The above copyright notice and this permission notice shall be\n  included in all copies or substantial portions of this Source Code Form.\n*/\n\n/**\n * @note This file exists merely as an easy reference for folks adding it to their configuration entries\n */\n\n(() => {\n  /* eslint-disable global-require */\n  const { run } = __webpack_require__(/*! ./lib/client/client */ \"./node_modules/webpack-plugin-serve/lib/client/client.js\");\n  let hash = '<unknown>';\n  let options;\n  try {\n    options = {\"compress\":null,\"headers\":null,\"historyFallback\":false,\"hmr\":true,\"host\":null,\"liveReload\":true,\"log\":{\"level\":\"info\",\"prefix\":{\"template\":\"{{level}}\"},\"name\":\"webpack-plugin-serve\"},\"open\":false,\"port\":8080,\"progress\":true,\"publicPath\":null,\"ramdisk\":false,\"secure\":false,\"static\":\"./dist\",\"status\":true,\"waitForBuild\":true,\"address\":\"[::]:8080\",\"compilerName\":null,\"wpsId\":\"e8eb5b9\"};\n  } catch (e) {\n    const { log } = __webpack_require__(/*! ./lib/client/log */ \"./node_modules/webpack-plugin-serve/lib/client/log.js\");\n    log.error(\n      'The entry for webpack-plugin-serve was included in your build, but it does not appear that the plugin was. Please check your configuration.'\n    );\n  }\n\n  try {\n    // eslint-disable-next-line camelcase\n    hash = __webpack_require__.h();\n  } catch (e) {} // eslint-disable-line no-empty\n\n  run(hash, options);\n})();\n\n\n//# sourceURL=webpack://survive-wepback/./node_modules/webpack-plugin-serve/client.js?");
 
 /***/ }),
 
@@ -106,7 +139,7 @@ eval("/*\n  Copyright © 2018 Andrew Powell\n\n  This Source Code Form is subjec
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((text = \"Hello world\") => {\n    const element = document.createElement(\"div\");\n    element.innerHTML = text;\n    return element;\n});\n\n//# sourceURL=webpack://survive-wepback/./src/component.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((text = \"Hello world\") => {\n    const element = document.createElement(\"div\");\n    element.className = \"rounded bg-red-100 border max-w-md m-4 p-4\";\n    element.innerHTML = text;\n    return element;\n});\n\n//# sourceURL=webpack://survive-wepback/./src/component.js?");
 
 /***/ }),
 
@@ -117,7 +150,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component */ \"./src/component.js\");\n\n\n\ndocument.body.appendChild((0,_component__WEBPACK_IMPORTED_MODULE_0__[\"default\"])());\n\nconsole.log('main')\n\n//# sourceURL=webpack://survive-wepback/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component */ \"./src/component.js\");\n/* harmony import */ var _main_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./main.css */ \"./src/main.css\");\n\n\n\n\ndocument.body.appendChild((0,_component__WEBPACK_IMPORTED_MODULE_0__[\"default\"])());\n\nconsole.log('main')\n\n//# sourceURL=webpack://survive-wepback/./src/index.js?");
 
 /***/ })
 
@@ -136,7 +169,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _com
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
+/******/ 			id: moduleId,
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
@@ -183,18 +216,27 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _com
 /******/ 		// This function allow to reference all chunks
 /******/ 		__webpack_require__.hu = (chunkId) => {
 /******/ 			// return url for filenames based on template
-/******/ 			return "6525fa1-" + chunkId + "-wps-hmr.js";
+/******/ 			return "e8eb5b9-" + chunkId + "-wps-hmr.js";
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/get mini-css chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference async chunks
+/******/ 		__webpack_require__.miniCssF = (chunkId) => {
+/******/ 			// return url for filenames based on template
+/******/ 			return undefined;
 /******/ 		};
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/get update manifest filename */
 /******/ 	(() => {
-/******/ 		__webpack_require__.hmrF = () => ("main-6525fa1-wps-hmr.json");
+/******/ 		__webpack_require__.hmrF = () => ("main-e8eb5b9-wps-hmr.json");
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b3967a75e7e97cae3565")
+/******/ 		__webpack_require__.h = () => ("0a3b0c7ca55ac7a4e441")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -668,6 +710,93 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _com
 /******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
 /******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
 /******/ 		__webpack_require__.p = scriptUrl;
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/css loading */
+/******/ 	(() => {
+/******/ 		var createStylesheet = (chunkId, fullhref, resolve, reject) => {
+/******/ 			var linkTag = document.createElement("link");
+/******/ 		
+/******/ 			linkTag.rel = "stylesheet";
+/******/ 			linkTag.type = "text/css";
+/******/ 			var onLinkComplete = (event) => {
+/******/ 				// avoid mem leaks.
+/******/ 				linkTag.onerror = linkTag.onload = null;
+/******/ 				if (event.type === 'load') {
+/******/ 					resolve();
+/******/ 				} else {
+/******/ 					var errorType = event && (event.type === 'load' ? 'missing' : event.type);
+/******/ 					var realHref = event && event.target && event.target.href || fullhref;
+/******/ 					var err = new Error("Loading CSS chunk " + chunkId + " failed.\n(" + realHref + ")");
+/******/ 					err.code = "CSS_CHUNK_LOAD_FAILED";
+/******/ 					err.type = errorType;
+/******/ 					err.request = realHref;
+/******/ 					linkTag.parentNode.removeChild(linkTag)
+/******/ 					reject(err);
+/******/ 				}
+/******/ 			}
+/******/ 			linkTag.onerror = linkTag.onload = onLinkComplete;
+/******/ 			linkTag.href = fullhref;
+/******/ 		
+/******/ 			document.head.appendChild(linkTag);
+/******/ 			return linkTag;
+/******/ 		};
+/******/ 		var findStylesheet = (href, fullhref) => {
+/******/ 			var existingLinkTags = document.getElementsByTagName("link");
+/******/ 			for(var i = 0; i < existingLinkTags.length; i++) {
+/******/ 				var tag = existingLinkTags[i];
+/******/ 				var dataHref = tag.getAttribute("data-href") || tag.getAttribute("href");
+/******/ 				if(tag.rel === "stylesheet" && (dataHref === href || dataHref === fullhref)) return tag;
+/******/ 			}
+/******/ 			var existingStyleTags = document.getElementsByTagName("style");
+/******/ 			for(var i = 0; i < existingStyleTags.length; i++) {
+/******/ 				var tag = existingStyleTags[i];
+/******/ 				var dataHref = tag.getAttribute("data-href");
+/******/ 				if(dataHref === href || dataHref === fullhref) return tag;
+/******/ 			}
+/******/ 		};
+/******/ 		var loadStylesheet = (chunkId) => {
+/******/ 			return new Promise((resolve, reject) => {
+/******/ 				var href = __webpack_require__.miniCssF(chunkId);
+/******/ 				var fullhref = __webpack_require__.p + href;
+/******/ 				if(findStylesheet(href, fullhref)) return resolve();
+/******/ 				createStylesheet(chunkId, fullhref, resolve, reject);
+/******/ 			});
+/******/ 		}
+/******/ 		// no chunk loading
+/******/ 		
+/******/ 		var oldTags = [];
+/******/ 		var newTags = [];
+/******/ 		var applyHandler = (options) => {
+/******/ 			return { dispose: () => {
+/******/ 				for(var i = 0; i < oldTags.length; i++) {
+/******/ 					var oldTag = oldTags[i];
+/******/ 					if(oldTag.parentNode) oldTag.parentNode.removeChild(oldTag);
+/******/ 				}
+/******/ 				oldTags.length = 0;
+/******/ 			}, apply: () => {
+/******/ 				for(var i = 0; i < newTags.length; i++) newTags[i].rel = "stylesheet";
+/******/ 				newTags.length = 0;
+/******/ 			} };
+/******/ 		}
+/******/ 		__webpack_require__.hmrC.miniCss = (chunkIds, removedChunks, removedModules, promises, applyHandlers, updatedModulesList) => {
+/******/ 			applyHandlers.push(applyHandler);
+/******/ 			chunkIds.forEach((chunkId) => {
+/******/ 				var href = __webpack_require__.miniCssF(chunkId);
+/******/ 				var fullhref = __webpack_require__.p + href;
+/******/ 				var oldTag = findStylesheet(href, fullhref);
+/******/ 				if(!oldTag) return;
+/******/ 				promises.push(new Promise((resolve, reject) => {
+/******/ 					var tag = createStylesheet(chunkId, fullhref, () => {
+/******/ 						tag.as = "style";
+/******/ 						tag.rel = "preload";
+/******/ 						resolve();
+/******/ 					}, reject);
+/******/ 					oldTags.push(oldTag);
+/******/ 					newTags.push(tag);
+/******/ 				}));
+/******/ 			});
+/******/ 		}
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */

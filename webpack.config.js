@@ -2,9 +2,12 @@ const { mode } = require("webpack-nano/argv");
 const { merge } = require("webpack-merge");
 const parts = require("./config/parts");
 
+const cssLoaders = [parts.autoprefix(), parts.tailwind()];
+
 const commonConfig = merge([
     { entry: ["./src"] },
     parts.page({ title: "Demo" }),
+    parts.extractCSS({ loaders: cssLoaders })
 ]);
 
 const productionConfig = merge([]);
